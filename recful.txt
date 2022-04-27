@@ -1,0 +1,1803 @@
+IMPLEMENTATION OF FCFS ALGORITHM
+#include <stdio.h>
+int main(void) {
+ int at[10],bt[10],wt[10],tt[10],i,n,b;
+ float awt,att;
+ printf("enter the no of process:");
+ scanf("%d",&n);
+ for(i=0;i<n;i++){
+ printf("arrival time of process id 
+%d:",i);
+ scanf("%d",&at[i]);
+ printf("burst time of process id 
+%d:",i);
+ scanf("%d",&bt[i]);
+ }
+ wt[0]=0;
+ b=0;
+ awt=att=0;
+ for(i=1;i<n;i++){
+ b=b+bt[i-1];
+ wt[i]=b-at[i];
+ awt=awt+wt[i];
+ }
+ for(i=0;i<n;i++){
+ tt[i]=bt[i]+wt[i];
+ att=att+tt[i];
+ }
+ printf("\nprocess id\t arrival 
+time\tburst time\twaiting time \t 
+turn around time\n");
+ for(i=0;i<n;i++){
+ 
+printf("%d\t\t\t\t%d\t\t\t\t%d\t\t\t\t
+%d\t\t\t\t%d 
+\n",i,at[i],bt[i],wt[i],tt[i]);
+ }
+ printf("\n average waiting 
+time:%f",awt/n);
+ printf("\n average turn around 
+time:%f",att/n);
+ return 0;
+}
+
+
+
+
+IMPLEMENTATION OF SJF SCHEDULING ALGORITHM
+#include <stdio.h>
+int main(void) {
+ int 
+at[10],bt[10],wt[10],tt[10],ct[10],i,p[1
+0],n,sum=0,pos,j,temp,tct,low,a;
+ printf("No of process:");
+ scanf("%d",&n);
+ float awt=0,att;
+ for(i=0;i<n;i++){
+ printf("arrival time of p%d:",i+1);
+ scanf("%d",&at[i]);
+ printf("burst time of p%d:",i+1);
+ scanf("%d",&bt[i]);
+ p[i]=i+1;
+ }
+ for(i=0;i<n;i++){
+ pos=i;
+ for(j=i+1;j<n-1;j++){
+ if(at[j]<at[pos])
+ pos=j;
+ }
+ temp=p[i];
+ p[i]=p[pos];
+ p[pos]=temp;
+ temp=at[i];
+ at[i]=at[pos];
+ at[pos]=temp;
+ temp=bt[i];
+ bt[i]=bt[pos];
+ bt[pos]=temp;
+ }
+ for(i=0;i<n;i++)
+ printf("%d",p[i]);
+ i=0;
+ a=at[i];
+ pos=i;
+ for(j=i+1;at[j]<=a;j++){
+ if(bt[pos]>bt[j]){
+ pos=j;
+ }
+ }
+ temp=p[i];
+ p[i]=p[pos];
+ p[pos]=temp;
+ temp=at[i];
+ at[i]=at[pos];
+ at[pos]=temp;
+ temp=bt[i];
+ bt[i]=bt[pos];
+ bt[pos]=temp;
+ ct[0]=at[0]+bt[0];
+ wt[0]=0;
+ tt[0]=bt[0];
+ att=bt[0];
+ for(i=1;i<n;i++){
+ pos=i;
+ tct=ct[i-1];
+ low=bt[i];
+ for(j=i;j<n;j++){
+ if(tct>=at[j] && bt[i]>=bt[j]){
+ pos=j;
+ if(bt[i]==bt[j] && at[i]<at[j]){
+ pos=i;
+ }
+ temp=p[i];
+ p[i]=p[pos];
+ p[pos]=temp;
+ temp=at[i];
+ at[i]=at[pos];
+ at[pos]=temp;
+ temp=bt[i];
+ bt[i]=bt[pos];
+ bt[pos]=temp;
+ }
+ }
+ wt[i]=ct[i-1]-at[i];
+ tt[i]=wt[i]+bt[i];
+ ct[i]=ct[i-1]+bt[i];
+ awt=awt+wt[i];
+ att=att+tt[i];
+ }
+ printf("\nprocess id\tarrival 
+time\tburst time\twaiting 
+time\tturnaround time \tcompletion 
+time");
+ for(i=0;i<n;i++){
+ 
+printf("\n%d\t\t\t%d\t\t\t\t%d\t\t\t\t\t%d\t\t\t\t\t%d\t\t\t\t\t%d",p[i],at[i],bt[i],
+wt[i],tt[i],ct[i]);
+ }
+ printf("\naverage waiting time:%f",awt/n);
+ printf("\naverage turnaround time:%f",att/n);
+ return 0;
+}
+
+
+
+IMPLEMENTATION OF PRIORITY SCHEDULING ALGORITHM
+#include<stdio.h>
+struct process{
+ int bt,at,wt,tt,ct,pr,pn;
+}p[10];
+int main(){
+ int n,i,pos,sum=0,j,a,tct,low;
+ struct process temp;
+ float awt=0,att=0;
+ printf("enter the no of process:");
+ scanf("%d",&n);
+ for(i=0;i<n;i++){
+ printf("arrival time p%d:",i+1);
+ scanf("%d",&p[i].at);
+ printf("burst time p%d:",i+1);
+ scanf("%d",&p[i].bt);
+ printf("priority of p%d:",i+1);
+ scanf("%d",&p[i].pr);
+ p[i].pn=i+1;
+ }
+ for(i=0;i<n-1;i++){
+ for(j=i+1;j<n;j++){
+ if(p[i].at>p[j].at){
+ temp=p[i];
+ p[i]=p[j];
+ p[j]=temp;
+ }
+ }
+ }
+ i=0;
+ a=p[i].at;
+ pos=i;
+ for(j=i+1;p[j].at<=a;j++){
+ if(p[pos].pr>p[j].pr){
+ pos=j;
+ }
+ }
+ temp=p[i];
+ p[i]=p[pos];
+ p[pos]=temp;
+ p[0].ct=p[0].at+p[0].bt;
+ p[0].wt=0;
+ p[0].tt=p[0].bt;
+ att=p[0].bt;
+ for(i=1;i<n;i++){
+ pos=i;
+ tct=p[i-1].ct;
+ low=p[i].pr;
+ for(j=i;j<n;j++){
+ if(tct>=p[j].at && p[i].pr>=p[j].pr){
+ pos=j;
+ if(p[i].pr==p[j].pr && p[i].at 
+<p[j].at){
+ pos=i;
+ }
+ temp=p[i];
+ p[i]=p[pos];
+ p[pos]=temp;
+ }
+ }
+ p[i].wt=p[i-1].ct-p[i].at;
+ p[i].tt=p[i].wt+p[i].bt;
+ p[i].ct=p[i-1].ct+p[i].bt;
+ awt=awt+p[i].wt;
+ att=att+p[i].tt;
+ }
+ printf("\nprocess id\tarrival 
+time\tburst time\tpriority\twaiting 
+time\tturnaround time \tcompletion 
+time");
+ for(i=0;i<n;i++){ 
+printf("\n%d\t\t\t%d\t\t\t\t%d\t\t\t
+%d\t\t\t\t%d\t\t\t\t\t%d\t\t\t\t%d",
+p[i].pn,p[i].at,p[i].bt,p[i].pr,
+ p[i].wt,p[i].tt,p[i].ct);
+ }
+ printf("\naverage waiting 
+time:%f",awt/n);
+ printf("\naverage turnaround 
+time:%f",att/n);
+ return 0;
+}
+
+
+
+IMPLEMENTATION OF ROUND ROBIN SCHEDULING
+#include <stdio.h>
+struct process{
+ int pn,at,bt,tt,ct,tbt,wt;
+ int completed;
+}p[20];
+int q[10],n,front=-1,rear=-1;
+void enqueue(int i){
+ if(rear==20)
+ printf("overflow");
+ rear++;
+ q[rear]=i;
+ if(front==-1)
+ front=0;
+}
+int dequeue(){
+ int temp;
+ temp=q[front];
+ if(front==rear)
+ front=rear=-1;
+ front++;
+ return temp;
+}
+int isinqueue(int i){
+ int k;
+ for(k=front;k<=rear;k++){
+ if(q[k]==i)
+ return 1;
+ }
+ return 0;
+}
+int main(){
+ int i,j,sum=0,clk=0,ts;
+ struct process temp;
+ float awt=0,att=0;
+ printf("enter the no of process:");
+ scanf("%d",&n);
+ for(i=0;i<n;i++){
+ p[i].pn=i+1;
+ printf("arrival time of p%d:",i+1);
+ scanf("%d",&p[i].at);
+ printf("burst time of p%d:",i+1);
+ scanf("%d",&p[i].bt);
+ sum+=p[i].bt;
+ p[i].tbt=p[i].bt;
+ p[i].completed=0;
+ }
+ printf("enter the time slice:");
+ scanf("%d",&ts);
+ for(i=0;i<n-1;i++){
+ for(j=i+1;j<n;j++){
+ if(p[i].at>p[j].at){
+ temp=p[i];
+ p[i]=p[j];
+ p[j]=temp;
+ }
+ }
+ }
+ enqueue(0);
+ for(clk=p[0].at;clk<sum;){
+ i=dequeue();
+ if(p[i].tbt<=ts){
+ clk+=p[i].tbt;
+ p[i].tbt=0;
+ p[i].completed=1;
+ p[i].wt=clk-p[i].at-p[i].bt;
+ p[i].ct=clk;
+ p[i].tt=clk-p[i].at;
+ awt+=p[i].wt;
+ att+=p[i].tt;
+ for(j=0;j<n;j++){
+ if(p[j].at<=clk && 
+p[j].completed!=1 && 
+isinqueue(j)!=1)
+ enqueue(j);
+ }
+ }
+ else{
+ clk+=ts;
+ p[i].tbt-=ts;
+ for(j=0;j<n;j++){
+ if(p[j].at<=clk && 
+p[j].completed!=1 &&i!=j && 
+isinqueue(j)!=1)
+ enqueue(j);
+ }
+ enqueue(i);
+ }
+ }
+ printf("process no\tarrival 
+time\tburst time\twaiting 
+time\tturnaround time\tcompletion 
+time");
+ for(i=0;i<n;i++){
+ 
+printf("\n%d\t\t\t%d\t\t\t\t%d\t\t\t
+%d\t\t\t\t%d\t\t\t\t%d",p[i].pn,p[i].a
+t,p[i].bt,p[i].wt,p[i].tt,p[i].ct);
+ 
+}
+ printf("\naverage waiting time:%f",awt/n);
+ printf("\naverage turnaround time:%f",att/n);
+}
+
+
+
+IMPLEMENTATION OF IPC USING ORDINARY PIPES
+#include<stdio.h>
+#include<unistd.h>
+void main()
+{
+int fd[2],n;
+char msg[]="Hai, This is my message\n";
+char buffer[100];
+pid_t pid;
+pipe(fd);
+pid=fork();
+if(pid!=0)
+{
+printf("Parent process with pid: %d\n",getpid());
+write(fd[1],msg,sizeof(msg));
+}
+else
+{
+printf("Child process with pid: %d\n",getpid());
+n = read(fd[0],buffer,100);
+write(1,buffer,n);
+}
+}
+IMPLEMENTATION OF IPC USING NAMED PIPES
+Sender.c
+#include<stdio.h>
+#include<fcntl.h>
+#include<unistd.h>
+void main()
+{
+int res;
+char msg[]="Good Day dear 
+friend\n";
+res=open("FIFO", O_WRONLY);
+write(res,msg, sizeof(msg));
+printf("Sender process with pid %d 
+sends the message\n",getpid());
+}
+Receiver.c
+#include<stdio.h>
+#include<unistd.h>
+#include<fcntl.h>
+void main()
+{
+int res,n;
+char buffer[100];
+res=open("FIFO",O_RDONLY);
+read(res,buffer,100);
+printf("Receiver process with pid %d 
+receives the 
+message:%s",getpid(),buffer);
+close(res);
+}
+FIFO.c
+#include<sys/types.h>
+#include<sys/stat.h>
+#include<stdio.h>
+void main()
+{
+int res;
+res=mkfifo("FIFO",0777);
+printf("Named Pipe FIFO is 
+created\n");
+}
+IMPLEMENTATION OF IPC USING MESSAGE QUEUES
+MQSender.c
+#include<stdio.h>
+#include<sys/ipc.h>
+#include<sys/msg.h>
+#define MAX 50
+struct msg
+{
+long msg_type;
+char msg_text[MAX];
+} message;
+void main(){
+key_t key;
+int mqid;
+key = ftok("hello.c",55);
+mqid = msgget(key, 
+0666|IPC_CREAT);
+message.msg_type = 1;
+printf("Enter the message\t");
+fgets(message.msg_text, MAX, stdin);
+msgsnd(mqid, &message, 
+sizeof(message), 0);
+printf("The message send is 
+%s\n",message.msg_text);
+}
+MQReceiver.c
+#include<stdio.h>
+#include<sys/ipc.h>
+#include<sys/msg.h>
+#define MAX 50
+struct msg
+{
+long msg_type;
+char msg_text[MAX];
+} message;
+void main()
+{
+key_t key;
+int mqid;
+key = ftok("ebey.c",55);
+mqid = msgget(key,0666);
+msgrcv(mqid, &message, 
+sizeof(message), 1, 0);
+printf("The message received is 
+%s\n",message.msg_text);
+msgctl(mqid,IPC_RMID, NULL);
+}
+IMPLEMENTATION OF IPC USING SHARED MEMORY
+SHMReceiver.c
+#include<stdio.h>
+#include<sys/ipc.h>
+#include<sys/shm.h>
+void main()
+{
+void *shared_memory;
+key_t key;
+int shmid;
+key = ftok("SHM",65);
+shmid = shmget(key, 1024, 0666);
+shared_memory = shmat(shmid, 
+NULL, 0);
+printf("The message received is 
+%s\n",(char*)shared_memory);
+shmdt(shared_memory);
+shmctl(shmid, IPC_RMID, NULL); 
+}
+SHMSender.c
+#include<stdio.h>
+#include<sys/ipc.h>
+#include<sys/shm.h>
+void main()
+{
+void *shared_memory;
+key_t key;
+int shmid;
+key = ftok("SHM",65);
+shmid = shmget(key, 1024, 
+0666|IPC_CREAT);
+shared_memory = shmat(shmid, 
+NULL, 0);
+printf("Enter the message to be 
+send\n");
+fgets(shared_memory, 100, stdin);
+printf("The message sent is 
+%s\n",(char*)shared_memory);
+shmdt(shared_memory);
+}
+IMPLEMENTATION OF DINING PHILOSOPHERS PROBLEM
+#include<stdio.h>
+#include<unistd.h>
+#include<semaphore.h>
+#include<pthread.h>
+sem_t chopstick[5];
+void eat(int ph)
+{
+printf("Philosopher%d is 
+eating\n",ph);
+}
+void *philos(void *arg)
+{
+int ph = *(int *)arg;
+printf("Philosopher%d is trying to 
+eat\n",ph);
+printf("Philosopher%d is trying to 
+take the left chopstick\n",ph);
+sem_wait(&chopstick[ph]); //int 
+sem_wait(sem_t *sem);
+printf("Philosopher%d takes the left 
+chopstick\n",ph);
+printf("Philosopher%d is trying to 
+take the right chopstick\n",ph);
+sem_wait(&chopstick[(ph+1)%5]); 
+printf("Philosopher%d takes the right 
+chopstick\n",ph);
+eat(ph);
+sleep(2);
+printf("Philosopher%d is trying to 
+release the left chopstick\n",ph);
+sem_post(&chopstick[ph]); //int 
+sem_post(sem_t *sem);
+printf("Philosopher%d releases the 
+left chopstick\n",ph);
+printf("Philosopher%d is trying to 
+release the right chopstick\n",ph);
+sem_post(&chopstick[(ph+1)%5]); 
+printf("Philosopher%d releases the 
+right chopstick\n",ph);
+}
+void main()
+{
+int i,n[5];
+pthread_t T[5];
+for(i=0;i<5;i++)
+{
+sem_init(&chopstick[i],0,1); // 
+sem_init(sem_t *sem, int pshared, 
+unsigned int 
+value);
+}
+for(i=0;i<5;i++)
+{
+n[i]=i;
+pthread_create(&T[i],NULL,philos,(vo
+id *)&n[i]); // int 
+pthread_create(pthread_t 
+*restrict thread, const pthread_attr_t 
+*restrict attr, void 
+*(*start_routine)(void *),
+// void *restrict arg);
+}
+for(i=0;i<5;i++)
+{
+pthread_join(T[i],NULL); //int 
+pthread_join(pthread_t thread, void 
+**value_ptr);
+}
+}
+IMPLEMENTATION OF BANKERS ALGORITHM
+#include<stdio.h>
+#define MAX 20
+void main()
+{
+int Curr_alloc[MAX][MAX], 
+Need[MAX][MAX], 
+Max[MAX][MAX], Avail[MAX], 
+Exist[MAX], Possess[MAX], 
+Ans[MAX], completed[MAX], np, nr, 
+i, j, k, t, p = 0, safe, 
+change_comp ;
+//Get the no: of processes
+printf("\nEnter the no: of 
+processes\t");
+scanf("%d",&np);
+//Get the no: of types of resources
+printf("\nEnter the no: of types of 
+resources\t");
+scanf("%d",&nr);
+//Get the total no: of instances of 
+each type of resources
+printf("\nEnter the total no: of 
+instances of each type of 
+resources\t");
+for(j = 0; j < nr; j++)
+{
+printf("\nNo: of instances of 
+Resource%d: ",j);
+scanf("%d",&Exist[j]);
+}
+//Get the Maximum resource 
+required matrix
+printf("\nEnter the maximum no: of 
+resources required by each 
+process\t");
+for(i = 0; i < np; i++)
+for(j = 0; j < nr; j++)
+{
+printf("\nEnter the maximum no: of 
+R%d resources required by 
+process%d\t",j,i);
+scanf("%d", &Max[i][j]);
+}
+//Clear the possessed resource 
+vector
+for(j = 0; j < nr; j++)
+Possess[j] = 0;
+//Clear the completed vector
+for(i = 0; i < np; i++)
+completed[i] = 0;
+//Get the current allocation matrix 
+printf("\nEnter the current 
+allocation of resources required by 
+each process\t");
+for(i = 0; i < np; i++)
+for(j = 0; j < nr; j++)
+{
+printf("\nEnter the current 
+allocation: of R%d resources to the 
+process%d\t",j,i);
+scanf("%d", &Curr_alloc[i][j]);
+Possess[j]=Possess[j]+Curr_alloc[i][j]
+;
+}
+//Find the Available vector
+for(j = 0; j < nr; j++)
+Avail[j] = Exist[j] - Possess[j];
+//Find the Need Matrix
+for(i = 0; i < np; i++)
+for(j = 0; j < nr; j++)
+{
+Need[i][j] = Max[i][j] -
+Curr_alloc[i][j];
+}
+//Printing the matrices and vectors
+//Printing Max
+printf("\nMax Matrix\n");
+for(i = 0; i < np; i++)
+{
+for(j = 0; j < nr; j++)
+{
+printf("%d\t",Max[i][j]);
+}
+printf("\n");
+}
+//Printing Curr_alloc matrix
+printf("\nCurr_alloc matrix\n");
+for(i = 0; i < np; i++)
+{
+for(j = 0; j < nr; j++)
+{
+printf("%d\t",Curr_alloc[i][j]);
+}
+printf("\n");
+}
+//Printing Need Matrix
+printf("\nNeed matrix\n");
+for(i = 0; i < np; i++)
+{
+for(j = 0; j < nr; j++)
+{
+printf("%d\t",Need[i][j]);
+}
+printf("\n");
+}
+//Printing Exist vector
+printf("\nExist Vector\n");
+for(j = 0; j < nr; j++)
+printf("%d\t",Exist[j]);
+//Printing Possess vector
+printf("\nPossess Vector\n");
+for(j = 0; j < nr; j++)
+printf("%d\t",Possess[j]);
+//Printing Avail vector
+printf("\nAvail Vector\n");
+for(j = 0; j < nr; j++)
+printf("%d\t",Avail[j]);
+for(k = 0; k < np; k++)
+{
+printf("\n k Iteration %d", k+1);
+change_comp = 0;
+for(i = 0;i < np; i++)
+{
+printf("\n i Iteration %d", i+1);
+if(completed[i] == 0)
+{
+int flag = 1;
+for(j = 0;j < nr; j++)
+{
+if(Need[i][j] > Avail[j])
+{
+//printf("\nProcess%d cannot 
+complete now. Go for 
+Process%d",i, i+1);
+flag = 0;
+break;
+}
+}
+if(flag == 1)
+{
+printf("\nProcess%d can complete 
+execution with available 
+resources", i);
+completed[i] = 1;
+change_comp = 1;
+Ans[p++] = i;
+for(j = 0;j < nr; j++)
+{
+Avail[j] += Curr_alloc[i][j];
+}
+//Printing Avail vector
+printf("\nAvail Vector\n");
+for(j = 0; j < nr; j++)
+printf("%d\t",Avail[j]);
+}
+}
+}
+if(change_comp == 0)
+{
+safe = 0;
+break;
+}
+else
+{
+safe = 1;
+for(int t = 0; t < np; t++)
+{
+if(completed[t]==0)
+{
+safe = 0;
+break;
+}
+}
+}
+if(safe)
+break;
+}
+if(safe == 1)
+{
+printf("\n The state is Safe and the 
+sequence of process completion 
+is\t");
+for(i = 0; i < np; i++)
+printf("P%d\t",Ans[i]);
+}
+else
+printf("\nThe state is Unsafe");
+printf("\n");
+}
+IMPLEMENTATION OF BESTFIT MEMORY ALLOCATION TECHNIQUES
+#include<stdio.h>
+#define MAX 20
+struct BLOCK
+{
+int size;
+int isallocated;
+int pallocated;
+int frag;
+} block[MAX];
+void main()
+{
+int np, nb, psize[MAX], i, j, k, best;
+printf("\nEnter the no: of blocks\t");
+scanf("%d",&nb);
+printf("\nEnter the size of the 
+blocks");
+for(i = 0; i < nb; i++)
+{
+printf("\nBlock%d: ",i);
+scanf("%d",&block[i].size);
+block[i].isallocated = 0;
+block[i].pallocated = -1;
+block[i].frag = block[i].size;
+}
+printf("\nEnter the no: of 
+processes\t");
+scanf("%d",&np);
+printf("\nEnter the size of the 
+processes");
+for(j = 0; j < np; j++)
+{ 
+printf("\nProcess%d: ",j);
+scanf("%d",&psize[j]);
+}
+//Best Fit Memory Allocation
+for(j = 0; j < np; j++)
+{
+best = -1;
+for(i = 0; i < nb; i++)
+{
+if(block[i].isallocated==0 && 
+block[i].size >= psize[j])
+{
+if(best == -1)
+best = i;
+else if(block[i].size < 
+block[best].size)
+best = i;
+}
+}
+if(best!=-1)
+{
+printf("\nProcess%d is allocated to 
+block%d",j,best);
+block[best].frag = block[best].size -
+psize[j];
+block[best].isallocated = 1;
+block[best].pallocated = j;
+}
+}
+for(i = 0; i < nb; i++)
+{
+printf("\nBlock\tIsallocated\tProces
+s_allocated\tBlockSize\tPSize\tFrag
+ment");
+printf("\n %d \t %d \t %d \t %d \t 
+%d \t %d \n",i, block[i].isallocated, 
+block[i].pallocated, block[i].size, 
+psize[block[i].pallocated], 
+block[i].frag);
+}
+}
+
+
+IMPLEMENTATION OF FIRST-FIT MEMORY ALLOCATION TECHNIQUES
+#include<stdio.h>
+#define MAX 20
+struct BLOCK
+{
+int size;
+int isallocated;
+int pallocated;
+int frag;
+} block[MAX];
+void main()
+{
+int np, nb, i, psize[MAX], j;
+printf("\nEnter the no: of blocks\t");
+scanf("%d",&nb);
+printf("\nEnter the size of the 
+blocks");
+for(i = 0; i < nb; i++)
+{
+printf("\nBlock%d: ",i);
+scanf("%d",&block[i].size);
+block[i].isallocated = 0;
+block[i].pallocated = -1;
+block[i].frag = block[i].size;
+}
+printf("\nEnter the no: of 
+processes\t");
+scanf("%d",&np);
+printf("\nEnter the size of the 
+processes");
+for(j = 0; j < np; j++)
+{ 
+printf("\nProcess%d: ",j);
+scanf("%d",&psize[j]);
+}
+//First Fit Memory Allocation
+for(j = 0; j < np; j++)
+{
+for(i = 0; i < nb; i++)
+{
+printf("\nComparing process%d 
+with block%d",j,i);
+if(block[i].isallocated==0 && 
+block[i].size >= psize[j])
+{
+printf("\nProcess%d is allocated to 
+block%d",j,i);
+block[i].frag = block[i].size - psize[j];
+block[i].isallocated = 1;
+block[i].pallocated = j;
+break;
+}
+}
+}
+for(i = 0; i < nb; i++)
+{
+printf("\nBlock\tIsallocated\tProces
+s_allocated\tBlockSize\tPSize\tFrag
+ment");
+printf("\n %d \t %d \t %d \t %d \t 
+%d \t %d \n",i, block[i].isallocated, 
+block[i].pallocated, block[i].size, 
+psize[block[i].pallocated], 
+block[i].frag);
+}
+}
+IMPLEMENTATION OF WORST-FIT MEMORY ALLOCATION
+TECHNIQUES
+#include<stdio.h>
+#define MAX 20
+struct BLOCK
+{
+int size;
+int isallocated;
+int pallocated;
+int frag;
+} block[MAX];
+void main()
+{
+int np, nb, psize[MAX], i, j, k, worst;
+printf("\nEnter the no: of blocks\t");
+scanf("%d",&nb);
+printf("\nEnter the size of the 
+blocks");
+for(i = 0; i < nb; i++)
+{
+printf("\nBlock%d: ",i);
+scanf("%d",&block[i].size);
+block[i].isallocated = 0;
+block[i].pallocated = -1;
+block[i].frag = block[i].size;
+}
+printf("\nEnter the no: of 
+processes\t");
+scanf("%d",&np);
+printf("\nEnter the size of the 
+processes");
+for(j = 0; j < np; j++)
+{ 
+printf("\nProcess%d: ",j);
+scanf("%d",&psize[j]);
+}
+for(j = 0; j < np; j++)
+{
+worst = -1;
+for(i = 0; i < nb; i++)
+{
+if(block[i].isallocated==0 && 
+block[i].size >= psize[j])
+{
+if(worst == -1)
+worst = i;
+else if(block[i].size > 
+block[worst].size)
+worst = i;
+}
+}
+if(worst!=-1)
+{
+printf("\nProcess%d is allocated to 
+block%d",j,worst);
+block[worst].frag = block[worst].size 
+- psize[j];
+block[worst].isallocated = 1;
+block[worst].pallocated = j;
+}
+}
+for(i = 0; i < nb; i++)
+{
+printf("\nBlock\tIsallocated\tProces
+s_allocated\tBlockSize\tPSize\tFrag
+ment");
+printf("\n %d \t %d \t %d \t %d \t 
+%d \t %d \n",i, block[i].isallocated, 
+block[i].pallocated, block[i].size, 
+psize[block[i].pallocated], 
+block[i].frag);
+}
+IMPLEMENTATION OF GO BACK-N PROTOCOL
+Server Program
+import java.net.*;
+import java.io.*;
+import java.util.*;
+public class Server
+{
+public static void main(String args[]) 
+throws Exception
+{
+ServerSocket server=new 
+ServerSocket(6262);
+System.out.println(“Server 
+established.”);
+Socket client=server.accept();
+ObjectOutputStream oos=new 
+ObjectOutputStream(client.getOutp
+utStream());
+ObjectInputStream ois=new 
+ObjectInputStream(client.getInputSt
+ream());
+System.out.println(“Client is now 
+connected.”);
+int x=(Integer)ois.readObject();
+int k=(Integer)ois.readObject();
+int j=0;
+int i=(Integer)ois.readObject();
+boolean flag=true;
+Random r=new Random(6);
+int mod=r.nextInt(6);
+while(mod==1||mod==0)
+mod=r.nextInt(6);
+while(true)
+{
+int c=k;
+for(int h=0;h<=x;h++)
+{
+System.out.print(“|”+c+”|”);
+c=(c+1)%x;
+}
+System.out.println();
+System.out.println();
+if(k==j)
+{
+System.out.println(“Frame “+k+” 
+recieved”+”\n”+”Data:”+j);
+j++;
+System.out.println();
+}
+else
+System.out.println(“Frames 
+recieved not in correct 
+order”+”\n”+” Expected frame:” + j +”\n”+ ” 
+Recieved frame no :”+ k);
+System.out.println();
+if(j%mod==0 && flag)
+{
+System.out.println(“Error found. Acknowledgement not sent. “);
+flag=!flag;
+j–;
+}
+else if(k==j-1)
+{
+oos.writeObject(k);
+System.out.println(“Acknowledgement sent”);
+}
+System.out.println();
+if(j%mod==0)
+flag=!flag;
+k=(Integer)ois.readObject();
+if(k==-1)
+break;
+i=(Integer)ois.readObject();
+}
+System.out.println(“Client finished sending data. Exiting”);
+oos.writeObject(-1);
+}
+}
+Client Program
+import java.util.*;
+import java.net.*;
+import java.io.*;
+public class Client
+{
+public static void main(String 
+args[]) throws Exception
+{
+BufferedReader br=new 
+BufferedReader(new 
+InputStreamReader(System.in));
+System.out.print(“Enter the value 
+of m : “);
+int 
+m=Integer.parseInt(br.readLine());
+int x=(int)((Math.pow(2,m))-1);
+System.out.print(“Enter no. of 
+frames to be sent:”);
+int 
+count=Integer.parseInt(br.readLine
+());
+int data[]=new int[count];
+int h=0;
+for(int i=0;i<count;i++)
+{
+System.out.print(“Enter data for 
+frame no ” +h+ ” => “);
+data[i]=Integer.parseInt(br.readLin
+e());
+h=(h+1)%x;
+}
+Socket client=new 
+Socket(“localhost”,6262);
+ObjectInputStream ois=new 
+ObjectInputStream(client.getInputS
+tream());
+ObjectOutputStream oos=new 
+ObjectOutputStream(client.getOut
+putStream());
+System.out.println(“Connected 
+with server.”);
+boolean flag=false;
+GoBackNListener listener=new 
+GoBackNListener(ois,x);
+listener=new 
+GoBackNListener(ois,x);
+listener.t.start();
+int strt=0;
+h=0;
+oos.writeObject(x);
+do
+{
+int c=h;
+for(int i=h;i<count;i++)
+{
+System.out.print(“|”+c+”|”);
+c=(c+1)%x;
+}
+System.out.println();
+System.out.println();
+h=strt;
+for(int i=strt;i<x;i++)
+{
+System.out.println(“Sending 
+frame:”+h);
+h=(h+1)%x;
+System.out.println();
+oos.writeObject(i);
+oos.writeObject(data[i]);
+Thread.sleep(100);
+}
+listener.t.join(3500);
+if(listener.reply!=x-1)
+{
+System.out.println(“No reply from 
+server in 3.5 seconds. Resending 
+data from frame no ” + 
+(listener.reply+1));
+System.out.println();
+strt=listener.reply+1;
+flag=false;
+}
+else
+{
+System.out.println(“All elements 
+sent successfully. Exiting”);
+flag=true;
+}
+}while(!flag);
+oos.writeObject(-1);
+}
+}
+class GoBackNListener implements 
+Runnable
+{
+Thread t;
+ObjectInputStream ois;
+int reply,x;
+GoBackNListener(ObjectInputStrea
+m o,int i)
+{
+t=new Thread(this);
+ois=o;
+reply=-2;
+x=i;
+}
+@Override
+public void run() {
+try
+{
+int temp=0;
+while(reply!=-1)
+{
+reply=(Integer)ois.readObject();
+if(reply!=-1 && reply!=temp+1)
+reply=temp;
+if(reply!=-1)
+{
+temp=reply;
+System.out.println(“Acknowledgement of frame no ” + (reply%x) + ” 
+recieved.”);
+System.out.println();
+}
+}
+reply=temp;
+}
+catch(Exception e)
+{
+System.out.println(“Exception => ” + e);
+}
+}
+IMPLEMENTATION OF SELECTIVE REPEAT ALGORITHM
+SERVER SIDE
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketException;
+public class ser
+{
+static ServerSocket Serversocket;
+static DataInputStream dis;
+static DataOutputStream dos;
+public static void main(String[] 
+args) throws SocketException
+{
+try
+{
+int a[] = { 30, 40, 50, 60, 70, 80, 90, 
+100 };
+Serversocket = new 
+ServerSocket(8011);
+System.out.println(&quot;waiting 
+for connection&quot;);
+Socket client = 
+Serversocket.accept();
+dis = new 
+DataInputStream(client.getInputStr
+eam());
+dos = new 
+DataOutputStream(client.getOutpu
+tStream());
+System.out.println(&quot;The 
+number of packets sent is:&quot; + 
+a.length);
+int y = a.length;
+dos.write(y);
+dos.flush();
+for (int i = 0; i &lt; a.length; i++)
+{
+dos.write(a[i]);
+dos.flush();
+}
+int k = dis.read();
+dos.write(a[k]);
+dos.flush();
+}
+catch (IOException e)
+{
+System.out.println(e);
+}
+finally
+{
+try
+{
+dis.close();
+dos.close();
+}
+catch (IOException e)
+{
+e.printStackTrace();
+}
+}
+}
+}
+CLIENT SIDE
+import java.lang.System;
+import java.net.*;
+import java.io.*;
+import java.text.*;
+import java.util.Random;
+import java.util.*;
+public class cli {
+static Socket connection;
+public static void main(String a[]) 
+throws SocketException {
+try {
+int v[] = new int[10];
+int n = 0;
+Random rands = new Random();
+int rand = 0;
+InetAddress addr = 
+InetAddress.getByName(&quot;Loc
+alhost&quot;);
+System.out.println(addr);
+connection = new Socket(addr, 
+8011);
+DataOutputStream out = new 
+DataOutputStream(
+connection.getOutputStream());
+DataInputStream in = new 
+DataInputStream(
+connection.getInputStream());
+int p = in.read();
+System.out.println(&quot;No of 
+frame is:&quot; + p);
+for (int i = 0; i &lt; p; i++) {
+v[i] = in.read();
+System.out.println(v[i]);
+}
+rand = rands.nextInt(p);
+v[rand] = -1;
+for (int i = 0; i &lt; p; i++)
+{
+System.out.println(&quot;Received 
+frame is: &quot; + v[i]);
+}
+for (int i = 0; i &lt; p; i++)
+if (v[i] == -1) {
+System.out.println(&quot;Request 
+to retransmit from packet no 
+&quot;
++ (i+1) + &quot; again!!&quot;);
+n = i;
+out.write(n);
+out.flush();
+}
+System.out.println();
+v[n] = in.read();
+System.out.println(&quot;Received 
+frame is: &quot; + v[n]);
+System.out.println(&quot;quiting&
+quot;);
+} catch (Exception e) {
+System.out.println(e);
+}
+}
+}
+IMPLEMENTATION OF TCP ECHOSERVER
+Server Side
+import java.io.*;
+import java.net.*;
+import java.util.*;
+public class TCPEchoServer
+{
+private static ServerSocket 
+serverSocket;
+private static final int PORT = 1234;
+public static void main(String[] args)
+{
+System.out.println(&quot;Opening 
+port…\n&quot;);
+try
+{
+serverSocket = new 
+ServerSocket(PORT);
+}
+catch(IOException ioEx)
+{
+System.out.println( &quot;Unable to 
+attach to port!&quot;);
+System.exit(1);
+}
+do
+{
+handleClient();
+}while (true);
+}
+private static void handleClient()
+{
+Socket link = null;
+try
+{
+link = serverSocket.accept();
+Scanner input = new 
+Scanner(link.getInputStream());
+PrintWriter output = new PrintWriter( 
+link.getOutputStream(),true);
+int numMessages = 0;
+String message = input.nextLine();
+while 
+(!message.equals(&quot;CLOSE&quot
+;))
+{
+System.out.println(&quot;Message 
+received.&quot;);
+numMessages++;
+output.println(&quot;Message 
+&quot; + numMessages + &quot;: 
+&quot; + message);
+message = input.nextLine();
+}
+output.println(numMessages + 
+&quot; messages received.&quot;);
+}
+catch(IOException ioEx)
+{
+ioEx.printStackTrace();
+}
+finally
+{
+try
+{
+System.out.println( &quot;\n Closing 
+connection… “);
+link.close();
+}
+catch(IOException ioEx)
+{
+System.out.println( &quot;Unable to 
+disconnect!&quot;);
+System.exit(1);
+}
+}
+}
+}
+Client Side
+import java.io.*;
+import java.net.*;
+import java.util.*;
+public class TCPEchoClient
+{
+private static InetAddress host;
+private static final int PORT = 1234;
+public static void main(String[] args)
+{
+try
+{
+host = InetAddress.getLocalHost();
+}
+catch(UnknownHostException uhEx)
+{
+System.out.println(&quot;Host ID not 
+found!&quot;);
+System.exit(1);
+}
+accessServer();
+}
+private static void accessServer()
+{
+Socket link = null;
+try
+{
+link = new Socket(host,PORT);
+Scanner input = new 
+Scanner(link.getInputStream());
+PrintWriter output = new PrintWriter( 
+link.getOutputStream(),true);.
+Scanner userEntry = new 
+Scanner(System.in);
+String message, response;
+do
+{
+System.out.print(&quot;Enter 
+message: &quot;);
+message = userEntry.nextLine();
+output.println(message);
+response = input.nextLine();
+System.out.println(&quot;\nSERVER&
+gt; &quot;+response);
+}while 
+(!message.equals(&quot;CLOSE&quot
+;));
+}
+catch(IOException ioEx)
+{
+ioEx.printStackTrace();
+}
+finally
+{
+try
+{
+System.out.println( &quot;\nClosing 
+connection… &quot;);
+link.close();
+}
+catch(IOException ioEx)
+{
+System.out.println( &quot;Unable to 
+disconnect!&quot;);
+System.exit(1);
+}
+}}}
+IMPLEMENTATION OF UDP ECHOSERVER
+Server Side:
+import java.io.*;
+import java.net.*;
+import java.util.*;
+public class UDPEchoServer
+{
+public static void main(String args[]) 
+throws IOException
+{
+Scanner sc = new Scanner(System.in);
+DatagramSocket ds = new 
+DatagramSocket();
+InetAddress ip = 
+InetAddress.getLocalHost();
+byte buf[] = null;
+while (true)
+{
+System.out.println(&quot;Enter 
+message for Client&quot;);
+String input = sc.nextLine();
+buf = input.getBytes();
+DatagramPacket DpSend = new 
+DatagramPacket(buf, buf.length, ip, 
+1234);
+ds.send(DpSend);
+if (input.equals(&quot;bye&quot;))
+break;
+}
+}
+}
+Client Side:
+import java.io.*;
+import java.net.*;
+public class UDPEchoClient
+{
+public static void main(String[] args) 
+throws IOException
+{
+DatagramSocket ds = new 
+DatagramSocket(1234);
+byte[] receive = new byte[65535];
+DatagramPacket DpReceive = null;
+while (true)
+{
+DpReceive = new 
+DatagramPacket(receive, 
+receive.length);
+ds.receive(DpReceive);
+System.out.println(&quot;From 
+Server:-&quot; + data(receive));
+if 
+(data(receive).toString().equals(&quo
+t;bye&quot;))
+{
+System.out.println(&quot;Exiting&qu
+ot;);
+break;
+}
+receive = new byte[65535];
+}
+}
+public static StringBuilder data(byte[] 
+a)
+{
+if (a == null)
+return null;
+StringBuilder ret = new 
+StringBuilder();
+int i = 0;
+while (a[i] != 0)
+{
+ret.append((char) a[i]);
+i++;
+}
+return ret;
+}
+}
+IMPLEMENTATION OF CLIENT-SERVER COMMUNICATION USING 
+SOCKETS
+Server Side
+import java.net.*;
+import java.io.*;
+public class TCPServerSocket {
+public static void main(String[] 
+args) throws Exception {
+try{
+ServerSocket server=new 
+ServerSocket(8888);
+Socket 
+serverClient=server.accept();
+DataInputStream inStream=new 
+DataInputStream(serverClient.getI
+nputStream());
+DataOutputStream 
+outStream=new 
+DataOutputStream(serverClient.get
+OutputStream());
+BufferedReader reader=new 
+BufferedReader(new 
+InputStreamReader(System.in));
+String 
+clientMessage=&quot;&quot;, 
+serverMessage=&quot;&quot;;
+clientMessage=inStream.readUTF()
+;
+System.out.println(&quot;From 
+Client: &quot;+clientMessage);
+System.out.println(&quot;Enter 
+message&quot;);
+serverMessage=reader.readLine();
+outStream.writeUTF(serverMessag
+e);
+outStream.flush();
+inStream.close();
+outStream.close();
+serverClient.close();
+server.close();
+}catch(Exception e){
+System.out.println(e);
+}
+}
+}
+Client Side:
+import java.io.*;
+import java.net.*;
+import java.util.*;
+public class TCPClientSocket {
+public static void main(String[] 
+args) throws Exception {
+try{
+Socket socket=new 
+Socket(&quot;127.0.0.1&quot;,888
+8);
+DataInputStream inStream=new 
+DataInputStream(socket.getInputSt
+ream());
+DataOutputStream 
+outStream=new 
+DataOutputStream(socket.getOutp
+utStream());
+BufferedReader br=new 
+BufferedReader(new 
+InputStreamReader(System.in));
+String 
+clientMessage=&quot;&quot;,serve
+rMessage=&quot;&quot;;
+System.out.println(&quot;Enter 
+message&quot;);
+clientMessage=br.readLine();
+outStream.writeUTF(clientMessage
+);
+outStream.flush();
+serverMessage=inStream.readUTF(
+);
+System.out.println(&quot;From 
+Server: &quot;+serverMessage);
+outStream.close();
+outStream.close();
+socket.close();
+}catch(Exception e){
+System.out.println(e);
+}
+}
+}
+IMPLEMENTATION OF CHAT APPLICATION
+Server Side
+import java.io.*;
+import java.net.*;
+public class Chatserver {
+private ServerSocket severSocket = 
+null;
+private Socket socket = null;
+private InputStream inStream = null;
+private OutputStream outStream = 
+null;
+public Chatserver() {
+}
+public void createSocket() {
+try {
+ServerSocket serverSocket = new 
+ServerSocket(3339);
+while (true) {
+socket = serverSocket.accept();
+inStream = socket.getInputStream();
+outStream = 
+socket.getOutputStream();
+System.out.println(&quot;Connected
+&quot;);
+createReadThread();
+createWriteThread();
+}
+} catch (IOException io) {
+io.printStackTrace();
+}
+}
+public void createReadThread() {
+Thread readThread = new Thread() {
+public void run() {
+while (socket.isConnected()) {
+try {
+byte[] readBuffer = new byte[200];
+int num = inStream.read(readBuffer);
+if (num &gt; 0) {
+byte[] arrayBytes = new byte[num];
+System.arraycopy(readBuffer, 0, 
+arrayBytes, 0, num);
+String recvedMessage = new 
+String(arrayBytes, &quot;UTF8&quot;);
+System.out.println(&quot;Received 
+message :&quot; + recvedMessage);
+} else {
+notify();
+}
+;
+} catch (SocketException se) {
+System.exit(0);
+} catch (IOException i) {
+i.printStackTrace();
+}
+}
+}
+};
+readThread.setPriority(Thread.MAX_
+PRIORITY);
+readThread.start();
+}
+public void createWriteThread() {
+Thread writeThread = new Thread() {
+public void run() {
+while (socket.isConnected()) {
+try {
+BufferedReader inputReader = new 
+BufferedReader(new 
+InputStreamReader(System.in));
+sleep(100);
+String typedMessage = 
+inputReader.readLine();
+if (typedMessage != null 
+&amp;&amp; typedMessage.length() 
+&gt; 0) {
+synchronized (socket) {
+outStream.write(typedMessage.getB
+ytes(&quot;UTF-8&quot;));
+sleep(100);
+}
+}
+} catch (IOException i) {
+i.printStackTrace();
+} catch (InterruptedException ie) {
+ie.printStackTrace();
+}
+}
+}
+};
+writeThread.setPriority(Thread.MAX_
+PRIORITY);
+writeThread.start();
+}
+public static void main(String[] args) {
+Chatserver chatServer = new 
+Chatserver();
+chatServer.createSocket();
+}
+}
+Client Side:
+import java.io.*;
+import java.net.*;
+public class Chatclient {
+private Socket socket = null;
+private InputStream inStream = null;
+private OutputStream outStream = 
+null;
+public Chatclient() {
+}
+public void createSocket() {
+try {
+socket = new 
+Socket(&quot;localHost&quot;, 
+3339);
+System.out.println(&quot;Connected
+&quot;);
+inStream = socket.getInputStream();
+outStream = 
+socket.getOutputStream();
+createReadThread();
+createWriteThread();
+} catch (UnknownHostException u) {
+u.printStackTrace();
+} catch (IOException io) {
+io.printStackTrace();
+}
+}
+public void createReadThread() {
+Thread readThread = new Thread() {
+public void run() {
+while (socket.isConnected()) {
+try {
+byte[] readBuffer = new byte[200];
+int num = inStream.read(readBuffer);
+if (num &gt; 0) {
+byte[] arrayBytes = new byte[num];
+System.arraycopy(readBuffer, 0, 
+arrayBytes, 0, num);
+String recvedMessage = new 
+String(arrayBytes, &quot;UTF8&quot;);
+System.out.println(&quot;Received 
+message :&quot; + recvedMessage);
+}
+}catch (SocketException se){
+System.exit(0);
+} catch (IOException i) {
+i.printStackTrace();
+}
+}
+}
+};
+readThread.setPriority(Thread.MAX_
+PRIORITY);
+readThread.start();
+}
+public void createWriteThread() {
+Thread writeThread = new Thread() {
+public void run() {
+while (socket.isConnected()) {
+try {
+BufferedReader inputReader = new 
+BufferedReader(new 
+InputStreamReader(System.in));
+sleep(100);
+String typedMessage = 
+inputReader.readLine();
+if (typedMessage != null 
+&amp;&amp; typedMessage.length() 
+&gt; 0) {
+synchronized (socket) {
+outStream.write(typedMessage.getB
+ytes(&quot;UTF-8&quot;));
+sleep(100);
+}
+}
+;
+} catch (IOException i) {
+i.printStackTrace();
+} catch (InterruptedException ie) {
+ie.printStackTrace();
+}
+}
+}
+};
+writeThread.setPriority(Thread.MAX_
+PRIORITY);
+writeThread.start();
+}
+public static void main(String[] args) 
+throws Exception {
+Chatclient ChatClient = new 
+Chatclient();
+ChatClient.createSocket();
+}
+}
